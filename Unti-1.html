@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Una sorpresa para Andy ❤️</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ffe5ec, #ffc2d1);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            overflow-x: hidden;
+            padding: 20px 10px;
+        }
+
+        /* Contenedor Grid Principal para Escritorio */
+        .layout-principal {
+            display: grid;
+            grid-template-columns: 1fr 600px 1fr;
+            gap: 20px;
+            max-width: 1300px;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        /* Columnas de los lados */
+        .columna-lateral {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        /* Pantalla de Inicio / Sorpresa */
+        #pantalla-inicio {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ffb3c6, #ff8fa3);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            transition: opacity 1s ease, visibility 1s;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .caja-sorpresa {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            max-width: 420px;
+            width: 100%;
+        }
+
+        .caja-sorpresa h1 {
+            color: #ff4d6d;
+            font-size: 26px;
+            margin-bottom: 20px;
+        }
+
+        .btn-abrir {
+            background-color: #ff4d6d;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255, 77, 109, 0.4);
+            margin-top: 10px;
+        }
+
+        .btn-abrir:hover {
+            transform: scale(1.05);
+            background-color: #ff758f;
+        }
+
+        /* Las Cajitas Interactivas (Cuadritos) */
+        .cuadrito-caja {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.06);
+            text-align: center;
+            border: 2px dashed #ffb3c6;
+            transition: transform 0.3s ease;
+        }
+        
+        .cuadrito-caja:hover {
+            transform: translateY(-5px);
+        }
+
+        .cuadrito-caja h3 {
+            color: #800f2f;
+            font-size: 16px;
+            margin-bottom: 12px;
+        }
+
+        .btn-cajita {
+            background: #ff758f;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            font-size: 13px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        .btn-cajita:hover {
+            background: #ff4d6d;
+        }
+
+        /* Contenedor de la Carta (Centro) */
+        .contenedor-carta {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px 30px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            position: relative;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s ease 0.5s, transform 1s ease 0.5s;
+        }
+
+        .decoracion-corazon {
+            text-align: center;
+            font-size: 40px;
+            color: #ff4d6d;
+            margin-bottom: 20px;
+            animation: latido 1.5s infinite;
+        }
+
+        @keyframes latido {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        h2 {
+            color: #800f2f;
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 26px;
+        }
+
+        .texto-carta {
+            color: #590d22;
+            font-size: 16px;
+            line-height: 1.8;
+            text-align: justify;
+        }
+
+        .texto-carta p {
+            margin-bottom: 20px;
+        }
+
+        .firma {
+            text-align: right;
+            font-weight: bold;
+            margin-top: 30px;
+            font-size: 18px;
+            color: #ff4d6d;
+        }
+
+        /* Estilos de los Popups (Modales) */
+        .modal-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .modal-popup.activo {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .contenido-popup {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 400px;
+            width: 85%;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+            position: relative;
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-popup.activo .contenido-popup {
+            transform: scale(1);
+        }
+
+        .contenido-popup h4 {
+            color: #ff4d6d;
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+
+        .contenido-popup p {
+            color: #590d22;
+            font-size: 15px;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .gif-bubu-dudu {
+            width: 150px;
+            height: auto;
+            margin: 10px auto;
+            display: block;
+        }
+
+        .btn-cerrar {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 15px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        /* Corazones flotantes de fondo */
+        .corazon-flotante {
+            position: absolute;
+            color: rgba(255, 77, 109, 0.2);
+            pointer-events: none;
+            animation: flotar 6s linear infinite;
+        }
+
+        @keyframes flotar {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* Adaptabilidad para Celulares */
+        @media (max-width: 1000px) {
+            .layout-principal {
+                grid-template-columns: 1fr;
+            }
+            .columna-lateral {
+                order: 2;
+            }
+            .contenedor-carta {
+                order: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Pantalla de Bienvenida -->
+    <div id="pantalla-inicio">
+        <div class="caja-sorpresa">
+            <h1>Hola, Andy mi amorsote ❤️</h1>
+            <p style="color: #666; margin-bottom: 25px;">Te dejé un detalle hermoso por aquí. Súbele el volumen a tu celular y presiona el botón.</p>
+            <button class="btn-abrir" onclick="abrirCarta()">Abrir Sorpresa ✨</button>
+        </div>
+    </div>
+
+    <!-- Contenedor Grid Estructurado -->
+    <div class="layout-principal">
+        
+        <!-- COLUMNA IZQUIERDA -->
+        <div class="columna-lateral">
+            <div class="cuadrito-caja">
+                <h3>De: Daniela la lokita jsjs 🤪</h3>
+                <button class="btn-cajita" onclick="abrirPopup('popup1')">Ver Mensajito ✨</button>
+            </div>
+
+            <div class="cuadrito-caja">
+                <h3>¡Sonríe amor! 💕</h3>
+                <button class="btn-cajita" onclick="abrirPopup('popup2')">Lee es mi mensajito sonríe 👀</button>
+            </div>
+        </div>
+
+        <!-- CENTRO: La Carta Principal -->
+        <div class="contenedor-carta" id="carta">
+            <div class="decoracion-corazon">❤️</div>
+            <h2>Para mi lugar seguro</h2>
+            
+            <div class="texto-carta" id="texto-narrar">
+                <p>Sé que pasamos muchísimo tiempo juntos y quiero que sepas lo mucho que disfruto cada segundo a tu lado. Estar en una relación en serio se siente como algo completamente nuevo para mí; contigo estoy descubriendo cómo se siente compartir la vida con alguien de verdad, y a veces, como es mi primera vez sintiendo esto, no sé exactamente cómo comportarme o cómo debería ser.</p>
+                
+                <p>A veces no entiendo del todo las cosas que me dices, o me cuesta procesar cuando me recuerdas que no todo se trata de mí. Sé que soy muy pegajosa, y por eso a veces me da un poquito de miedo o me siento mal si siento que no me quieres tan cerca; pero voy entendiendo que no es que no me quieras, sino que tú también necesitas tu propio espacio y tu tiempo, y eso está bien.</p>
+                
+                <p>Me encanta ser parte de tu mundo y tus pasiones. Por eso, cada vez que hay un baile, una presentación o algo importante para ti, me nace del corazón estar allí en primera fila; sé muy bien que te gustaría verme entre el público apoyándote, y a mí me hace inmensamente feliz ser testigo de lo que haces. De la misma manera, me ilusiona mucho que tú estés presente y me veas cada vez que me toca participar a mí, porque compartir nuestros logros nos hace más fuertes.</p>
+                
+                <p>Quiero estar contigo en absolutamente todo: no solo cuando reímos, sino también en tus momentos tristes, en tus días malos o cuando estás enojado. A veces, cuando estamos molestos o heridos, lo que nos decimos puede lastimar un poquito, y admito que en esos momentos me cuesta reaccionar o me quedo sin saber qué decir. Como casi siempre estamos felices y disfrutando, a veces me guardo las cosas porque temo romper esa bonita energía que tenemos, pero sé que también es sano encontrar el momento perfecto para conversar con calma sobre lo que nos duele y así entendernos mejor.</p>
+
+                <p>Sé que me afecto mucho por cositas pequeñas porque soy una persona que nota y aprecia cada detalle, y sé que a veces eso te termina afectando a ti también. No me gusta que te sientas mal por mi culpa. Sé que no soy perfecta y que a veces no hago las cosas bien, pero quiero que entiendas que te amo demasiado y que eres mi lugar seguro, el único espacio donde puedo ser completamente yo misma sin temor.</p>
+                
+                <p>Amo tus locuras, tus payasadas y la forma tan bonita en la que siempre me tratas. A veces piensas que me burlo de ti, pero no es así, es solo que me fascina cómo eres. También me pasa que si te noto un poquito raro, mi cabeza piensa que estás enojado conmigo, cuando quizás solo estás cansadito por el día. Prometo ir aprendiendo a entender mejor todo esto.</p>
+
+                <p>Estando aquí :3, compartiendo el día a día, a veces me pongo a pensar en que ya es nuestro último año juntos y me entra una profunda nostalgia. Sé perfectamente que cuando todo esto termine y toque volver a donde están nuestras familias, significará que estaremos lejos por un tiempo. Aunque me da mucha tristeza pensar en ese momento y me asusta un poquito el no saber cómo estaremos cuando la distancia se interponga, quiero que sepas que mi mayor deseo es poder seguir contigo, compartiendo nuestras vidas sin importar los kilómetros. Sé que no será nada fácil, lo sé muy bien, pero si me preguntas qué es lo único que quiero en este mundo, la verdad es que solo deseo estar a tu lado y salir adelante juntos.</p>
+                
+                <p>Solo quería recordarte que te amo con todo mi corazón, que aprecio inmensamente cómo me cuidas y que pase lo que pase, nunca olvides lo muchísimo que significas para mí. No sé qué haría sin ti, me he acostumbrado tanto a buscar tu mano, a abrazarte y a tenerte cerca.</p>
+            </div>
+
+            <div class="firma">Te amo muchísimo siempre ❤️</div>
+        </div>
+
+        <!-- COLUMNA DERECHA -->
+        <div class="columna-lateral">
+            <div class="cuadrito-caja">
+                <h3>Somos Bubu y Dudu 🐼🐻</h3>
+                <button class="btn-cajita" onclick="abrirPopup('popup3')">¡Míranos! 💕</button>
+            </div>
+
+            <div class="cuadrito-caja">
+                <h3>Mi tatuaje sin tinta ✒️</h3>
+                <button class="btn-cajita" onclick="abrirPopup('popup4')">Leer Significado 🌸</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- POPUPS (MODALES) INTERACTIVOS -->
+    
+    <!-- Popup 1: Daniela la lokita -->
+    <div id="popup1" class="modal-popup">
+        <div class="contenido-popup">
+            <h4>De tu lokita Daniela 🤪</h4>
+            <p>Sí, mi amor, sé que a veces soy una completa loquita inquietante, pegajosa y que te hace renegar un poquito... ¡pero soy TU loquita! Gracias por aguantar mis locuras todos los días y quererme tal y como soy.</p>
+            <button class="btn-cerrar" onclick="cerrarPopup('popup1')">Cerrar ❤️</button>
+        </div>
+    </div>
+
+    <!-- Popup 2: Algo Chistoso -->
+    <div id="popup2" class="modal-popup">
+        <div class="contenido-popup">
+            <h4>Lee es mi mensajito sonríe 👀</h4>
+            <p>A veces piensas que me burlo de ti cuando haces tus payasadas, ¡pero es que me encantan! Eres el único que puede hacerme reír tanto. ¿Un secreto? Aunque tengas cara de cansado o reniegues, para mí sigues siendo el más guapo de todos. ¡No me mires raro, es la verdad! 😂❤️</p>
+            <button class="btn-cerrar" onclick="cerrarPopup('popup2')">Cerrar 😂</button>
+        </div>
+    </div>
+
+    <!-- Popup 3: Bubu y Dudu -->
+    <div id="popup3" class="modal-popup">
+        <div class="contenido-popup">
+            <h4>¡Somos idénticos a Bubu y Dudu! 🐻🐼</h4>
+            <p>Tú y yo somos exactamente como ellos: uno tierno, el otro amargadito a veces, pero no podemos estar separados. ¡Mira lo lindos que nos vemos juntos!</p>
+            <img src="dudu-dudu-bubu.gif" alt="Bubu Dudu Cute" class="gif-bubu-dudu">
+            <button class="btn-cerrar" onclick="cerrarPopup('popup3')">¡Te amo! 💕</button>
+        </div>
+    </div>
+
+    <!-- Popup 4: Tatuaje sin tinta -->
+    <div id="popup4" class="modal-popup">
+        <div class="contenido-popup">
+            <h4>Eres mi tatuaje sin tinta ✒️✨</h4>
+            <p>¿Sabes por qué eres mi tatuaje sin tinta? Porque no dolió en la piel, pero te quedaste grabado para siempre en mi corazón y en mi alma. Aunque la vida nos lleve a estar lejos por un tiempo... estás marcado en mí de por vida. ❤️</p>
+            <button class="btn-cerrar" onclick="cerrarPopup('popup4')">Cerrar 🥰</button>
+        </div>
+    </div>
+
+
+    <script>
+        function abrirCarta() {
+            const inicio = document.getElementById('pantalla-inicio');
+            const carta = document.getElementById('carta');
+            
+            inicio.style.opacity = '0';
+            inicio.style.visibility = 'hidden';
+            
+            carta.style.opacity = '1';
+            carta.style.transform = 'translateY(0)';
+
+            setInterval(crearCorazon, 400);
+            narrarCarta();
+        }
+
+        function crearCorazon() {
+            const corazon = document.createElement('div');
+            corazon.classList.add('corazon-flotante');
+            corazon.innerText = '❤️';
+            corazon.style.left = Math.random() * 100 + 'vw';
+            corazon.style.fontSize = Math.random() * 20 + 10 + 'px';
+            corazon.style.animationDuration = Math.random() * 3 + 4 + 's';
+            
+            document.body.appendChild(corazon);
+
+            setTimeout(() => {
+                corazon.remove();
+            }, 6000);
+        }
+
+        function narrarCarta() {
+            if ('speechSynthesis' in window) {
+                const parrafos = document.querySelectorAll('#texto-narrar p');
+                
+                parrafos.forEach((p, index) => {
+                    const texto = p.innerText;
+                    const mensajeVoz = new SpeechSynthesisUtterance(texto);
+                    
+                    mensajeVoz.lang = 'es-PE'; 
+                    mensajeVoz.rate = 0.95; 
+                    mensajeVoz.pitch = 1.0; 
+
+                    if (index === parrafos.length - 1) {
+                        mensajeVoz.onend = () => {
+                            const firmaVoz = new SpeechSynthesisUtterance("Te amo muchísimo siempre Andy.");
+                            firmaVoz.lang = 'es-PE';
+                            firmaVoz.rate = 0.95;
+                            window.speechSynthesis.speak(firmaVoz);
+                        };
+                    }
+
+                    window.speechSynthesis.speak(mensajeVoz);
+                });
+            }
+        }
+
+        function abrirPopup(id) {
+            document.getElementById(id).classList.add('activo');
+        }
+
+        function cerrarPopup(id) {
+            document.getElementById(id).classList.remove('activo');
+        }
+    </script>
+</body>
+</html>
